@@ -22,27 +22,8 @@ Environment Setup:
 
 2. MCP Server Setup:
 
-   2.1 MCP Desktop Commander (File System Service):
-   Prerequisites: Node.js and npm
-   ```bash
-   # Install MCP service
-   npx -y @smithery/cli install @wonderwhy-er/desktop-commander --client claude
-   npx -y @wonderwhy-er/desktop-commander setup --force-file-protocol
 
-   # Configure in owl/examples/mcp_servers_config.json:
-   {
-     "desktop-commander": {
-       "command": "npx",
-       "args": [
-         "-y",
-         "@wonderwhy-er/desktop-commander",
-         "--force-file-protocol"
-       ]
-     }
-   }
-   ```
-
-   2.2 MCP Playwright Service:
+   2.1 MCP Playwright Service:
    ```bash
    # Install MCP service
    npm install -g @executeautomation/playwright-mcp-server
@@ -59,7 +40,7 @@ Environment Setup:
    }
    ```
 
-   2.3 MCP Fetch Service (Optional - for better retrieval):
+   2.2 MCP Fetch Service (Optional - for better retrieval):
    ```bash
    # Install MCP service
    pip install mcp-server-fetch
@@ -168,8 +149,7 @@ async def main():
         question = (
             "I'd like a academic report about Andrew Ng, including "
             "his research direction, published papers (At least 3),"
-            " institutions, etc.Then organize the report in Markdown "
-            "format and save it to my desktop"
+            " institutions, etc. "
         )
 
         # Connect to all MCP toolkits

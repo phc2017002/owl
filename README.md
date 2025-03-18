@@ -422,6 +422,30 @@ Here are some tasks you can try with OWL:
 
 OWL's MCP integration provides a standardized way for AI models to interact with various tools and data sources:
 
+Before using MCP, you need to install Node.js first.
+### **Install Node.js**
+### Windows
+
+Download the official installer: [Node.js](https://nodejs.org/en).
+
+Check "Add to PATH" option during installation.
+
+### Linux
+```bash
+sudo apt update
+sudo apt install nodejs npm -y
+```
+### Mac
+```bash
+brew install node
+```
+
+### **Install Playwright MCP Service**
+```bash
+npm install -g @executeautomation/playwright-mcp-server
+npx playwright install-deps
+```
+
 Try our comprehensive MCP example in `examples/run_mcp.py` to see these capabilities in action!
 
 ## Available Toolkits
