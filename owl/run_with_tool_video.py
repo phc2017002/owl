@@ -46,37 +46,37 @@ def construct_society(question: str) -> OwlRolePlaying:
     models = {
         "user": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_type=ModelType.GPT_4O_MINI,
             model_config_dict={"temperature": 0},
         ),
         "assistant": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_type=ModelType.GPT_4O_MINI,
             model_config_dict={"temperature": 0},
         ),
         "web": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_type=ModelType.GPT_4O_MINI,
             model_config_dict={"temperature": 0},
         ),
         "planning": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_type=ModelType.GPT_4O_MINI,
             model_config_dict={"temperature": 0},
         ),
         "video": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_type=ModelType.GPT_4O_MINI,
             model_config_dict={"temperature": 0},
         ),
         "image": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_type=ModelType.GPT_4O_MINI,
             model_config_dict={"temperature": 0},
         ),
         "document": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_type=ModelType.GPT_4O_MINI,
             model_config_dict={"temperature": 0},
         ),
     }

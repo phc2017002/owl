@@ -51,38 +51,44 @@ def construct_society(question: str) -> RolePlaying:
     # Create models for different components
     models = {
         "user": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
             model_config_dict={"temperature": 0},
         ),
         "assistant": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
             model_config_dict={"temperature": 0},
         ),
+<<<<<<< Updated upstream:examples/run.py
         "browsing": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
             model_type=ModelType.GPT_4O,
+=======
+        "web": ModelFactory.create(
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
+>>>>>>> Stashed changes:owl/run.py
             model_config_dict={"temperature": 0},
         ),
         "planning": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
             model_config_dict={"temperature": 0},
         ),
         "video": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
             model_config_dict={"temperature": 0},
         ),
         "image": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
             model_config_dict={"temperature": 0},
         ),
         "document": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
             model_config_dict={"temperature": 0},
         ),
     }

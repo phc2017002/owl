@@ -20,6 +20,7 @@ import sys
 from dotenv import load_dotenv
 from camel.models import ModelFactory
 from camel.toolkits import (
+    AudioAnalysisToolkit,
     CodeExecutionToolkit,
     ExcelToolkit,
     ImageAnalysisToolkit,
@@ -28,6 +29,7 @@ from camel.toolkits import (
     BrowserToolkit,
     FileWriteToolkit,
 )
+import os
 from camel.types import ModelPlatformType, ModelType
 from camel.societies import RolePlaying
 
@@ -45,7 +47,14 @@ load_dotenv(dotenv_path=str(env_path))
 set_log_level(level="DEBUG")
 
 
+<<<<<<< Updated upstream:examples/run_qwen_zh.py
 def construct_society(question: str) -> RolePlaying:
+=======
+
+
+
+def construct_society(question: str) -> OwlRolePlaying:
+>>>>>>> Stashed changes:owl/run_qwen_zh.py
     """
     Construct a society of agents based on the given question.
 
@@ -60,8 +69,8 @@ def construct_society(question: str) -> RolePlaying:
     models = {
         "user": ModelFactory.create(
             model_platform=ModelPlatformType.QWEN,
-            model_type=ModelType.QWEN_MAX,
             model_config_dict={"temperature": 0},
+            model_type=ModelType.QWEN_MAX,
         ),
         "assistant": ModelFactory.create(
             model_platform=ModelPlatformType.QWEN,
@@ -80,12 +89,12 @@ def construct_society(question: str) -> RolePlaying:
         ),
         "video": ModelFactory.create(
             model_platform=ModelPlatformType.QWEN,
-            model_type=ModelType.QWEN_MAX,
+            model_type=ModelType.QWEN_2_5_VL_72B,
             model_config_dict={"temperature": 0},
         ),
         "image": ModelFactory.create(
             model_platform=ModelPlatformType.QWEN,
-            model_type=ModelType.QWEN_MAX,
+            model_type=ModelType.QWEN_2_5_VL_72B,
             model_config_dict={"temperature": 0},
         ),
         "document": ModelFactory.create(
@@ -104,6 +113,7 @@ def construct_society(question: str) -> RolePlaying:
             output_language="English",
         ).get_tools(),
         *VideoAnalysisToolkit(model=models["video"]).get_tools(),
+        *AudioAnalysisToolkit().get_tools(),
         *CodeExecutionToolkit(sandbox="subprocess", verbose=True).get_tools(),
         *ImageAnalysisToolkit(model=models["image"]).get_tools(),
         SearchToolkit().search_duckduckgo,
@@ -141,6 +151,7 @@ def construct_society(question: str) -> RolePlaying:
 def main():
     r"""Main function to run the OWL system with an example question."""
     # Example research question
+<<<<<<< Updated upstream:examples/run_qwen_zh.py
 <<<<<<< HEAD:owl/run_qwen_zh.py
     question = "What is the meaning of LLM?"
 =======
@@ -149,6 +160,9 @@ def main():
     # Override default task if command line argument is provided
     task = sys.argv[1] if len(sys.argv) > 1 else default_task
 >>>>>>> 106a169ee93a97e54cee672d6ee4ade5df409cdf:examples/run_qwen_zh.py
+=======
+    question = "What is in the given video file? Here is the file path: tmp/5_minute_video.mp4."
+>>>>>>> Stashed changes:owl/run_qwen_zh.py
 
     # Construct and run the society
     society = construct_society(task)
@@ -156,7 +170,6 @@ def main():
 
     # Output the result
     print(f"\033[94mAnswer: {answer}\033[0m")
-
 
 if __name__ == "__main__":
     main()
