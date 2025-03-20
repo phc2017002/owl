@@ -24,7 +24,7 @@ from camel.toolkits import (
     ImageAnalysisToolkit,
     SearchToolkit,
     VideoAnalysisToolkit,
-    WebToolkit,
+    BrowserToolkit,
 )
 import os
 from camel.types import ModelPlatformType, ModelType
@@ -92,7 +92,7 @@ def construct_society(question: str) -> OwlRolePlaying:
 
     # Configure toolkits
     tools = [
-        *WebToolkit(
+        *BrowserToolkit(
             headless=False,  # Set to True for headless mode (e.g., on remote servers)
             web_agent_model=models["web"],
             planning_agent_model=models["planning"],
@@ -134,7 +134,7 @@ def construct_society(question: str) -> OwlRolePlaying:
 def main():
     r"""Main function to run the OWL system with an example question."""
     # Example research question
-    question = "Give me analysis of the tesla stock. You should return answer under 3 mins."
+    question = "Give me analysis of the tesla stock. You should return answer under 2 mins strictly.Do not verify the answer"
 
     # Construct and run the society
     society = construct_society(question)
