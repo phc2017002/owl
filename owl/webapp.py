@@ -249,6 +249,8 @@ MODULE_DESCRIPTIONS = {
     "run_ollama": "Using local ollama model to process tasks",
     "run_qwen_mini_zh": "Using qwen model with minimal configuration to process tasks",
     "run_qwen_zh": "Using qwen model to process tasks",
+    "run_azure_openai": "Using azure openai model to process tasks",
+    "run_groq": "Using groq model to process tasks",
 }
 
 

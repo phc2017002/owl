@@ -249,6 +249,8 @@ MODULE_DESCRIPTIONS = {
     "run_ollama": "使用本地ollama模型处理任务",
     "run_qwen_mini_zh": "使用qwen模型最小化配置处理任务",
     "run_qwen_zh": "使用qwen模型处理任务",
+    "run_azure_openai": "使用azure openai模型处理任务",
+    "run_groq": "使用groq模型处理任务",
 }
 
 

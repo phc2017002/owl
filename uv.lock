@@ -482,26 +482,23 @@ wheels = [
 
 [[package]]
 name = "camel-ai"
-version = "0.2.32"
+version = "0.2.35"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
-    { name = "curl-cffi" },
     { name = "docstring-parser" },
-    { name = "eval-type-backport" },
     { name = "httpx" },
     { name = "jsonschema" },
     { name = "numpy" },
     { name = "openai" },
-    { name = "protobuf" },
     { name = "psutil" },
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "tiktoken" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c6/a9/61e442dc7e747842fe7655cb026f1e3f6b2b7a98e84767a60edc78c55ec4/camel_ai-0.2.32.tar.gz", hash = "sha256:2c51f45817a4405d9547fe76e780ccfc82efc272def9318896714f0f80a5bd69", size = 443394 }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/9d/fac44260ebec63b9199d170fc22b5f3b77a5ab51fb6014fa962b0173f524/camel_ai-0.2.35.tar.gz", hash = "sha256:b90e54a81a73c473a0e673b14db5a32fb3eeec394d61a071cf510d87490f4d49", size = 451009 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/d1/fb4513aaa473616e66c4deace46e3dcef6723fcd20ec07171ab7e71d3f52/camel_ai-0.2.32-py3-none-any.whl", hash = "sha256:d30e1b16907e0379bb961918e25ef2f48b48caf49c774a6f36ef500fb9b3b5c5", size = 753466 },
+    { url = "https://files.pythonhosted.org/packages/cb/6a/c38145134e6e1a92e553c336d9bb51286bc94c1334e8bc311daa37c6a742/camel_ai-0.2.35-py3-none-any.whl", hash = "sha256:3778da315e7e4893d4d841b561f9d4e0fa6e7976b430daa52e0c887ae18431ec", size = 765923 },
 ]
 
 [package.optional-dependencies]
@@ -961,24 +958,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/33/9f/329d26121fe165be44b1dfff21aa0dc348f04633931f1d20ed6cf448a236/cssutils-2.11.1.tar.gz", hash = "sha256:0563a76513b6af6eebbe788c3bf3d01c920e46b3f90c8416738c5cfc773ff8e2", size = 711657 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a7/ec/bb273b7208c606890dc36540fe667d06ce840a6f62f9fae7e658fcdc90fb/cssutils-2.11.1-py3-none-any.whl", hash = "sha256:a67bfdfdff4f3867fab43698ec4897c1a828eca5973f4073321b3bccaf1199b1", size = 385747 },
-]
-
-[[package]]
-name = "curl-cffi"
-version = "0.6.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "certifi" },
-    { name = "cffi" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0c/48/8c79ea18592590eaf49c051398c911dca43482bee22688516539251dcbb9/curl_cffi-0.6.2.tar.gz", hash = "sha256:9ee519e960b5fc6e0bbf13d0ecba9ce5f6306cb929354504bf03cc30f59a8f63", size = 122340 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/be/be/6056dcd5d1a7bc14b98b30b739e23c24e8386ec9b44c32837d30f104fad9/curl_cffi-0.6.2-cp38-abi3-macosx_10_9_x86_64.whl", hash = "sha256:23b8a2872b160718c04b06b1f8aa4fb1a2f4f94bce7040493515e081a27cad19", size = 4654471 },
-    { url = "https://files.pythonhosted.org/packages/fc/6e/0c6ae1a949268aa0d5c842aa3eba572347730aabeda59091d0240b79a4ff/curl_cffi-0.6.2-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:ad3c1cf5360810825ec4bc3da425f26ee4098878a615dab9d309a99afd883ba9", size = 2186939 },
-    { url = "https://files.pythonhosted.org/packages/7e/be/843013c413dbd5e9f36ae06bdf735e7c9feeec9b7f5a4cded813b20988dc/curl_cffi-0.6.2-cp38-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3d01de6ed737ad1924aaa0198195b9020c38e77ce90ea3d72b9eacf4938c7adf", size = 5552027 },
-    { url = "https://files.pythonhosted.org/packages/c1/1e/ccbe5cbb14b08e882628e8b50e6640f415256ec7a6e3084c9ce2765588d5/curl_cffi-0.6.2-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:37e513cc149d024a2d625e202f2cc9d4423d2937343ea2e06f797d99779e62dc", size = 5720483 },
-    { url = "https://files.pythonhosted.org/packages/d7/c9/5b2fd0f16e92329b482d737e7b189a79495309c8ec0e3fc480f83abdb919/curl_cffi-0.6.2-cp38-abi3-win32.whl", hash = "sha256:12e829af97cbf7c1d5afef177e786f6f404ddf163b08897a1ed087cadbeb4837", size = 2325216 },
-    { url = "https://files.pythonhosted.org/packages/e8/43/9cbd2dde60f7e9ef83748dc0c254d64073c1eafdccd8b1d37d399d457449/curl_cffi-0.6.2-cp38-abi3-win_amd64.whl", hash = "sha256:3791b7a9ae4cb1298165300f2dc2d60a86779f055570ae83163fc2d8a74bf714", size = 2312273 },
 ]
 
 [[package]]
@@ -3622,7 +3601,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "camel-ai", extras = ["all"], specifier = "==0.2.32" },
+    { name = "camel-ai", extras = ["all"], specifier = "==0.2.35" },
     { name = "chunkr-ai", specifier = ">=0.0.41" },
     { name = "docx2markdown", specifier = ">=0.1.1" },
     { name = "gradio", specifier = ">=3.50.2" },
