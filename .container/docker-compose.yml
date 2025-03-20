@@ -1,52 +1,45 @@
 services:
   owl:
-    build:
-      context: ..
-      dockerfile: .container/Dockerfile
-      args:
-        # 构建参数 | Build arguments
-        BUILDKIT_INLINE_CACHE: 1
-      # 使用BuildKit加速构建 | Use BuildKit to accelerate build
-      cache_from:
-        - python:3.10-slim
+    # Option 1: Use pre-built image from Docker Hub
+    image: mugglejinx/owl:latest
+    
+    # Option 2: Build image locally
+    # Uncomment the following lines and comment out the 'image' line above to build locally
+    # build:
+    #   context: ..
+    #   dockerfile: .container/Dockerfile
+    
     volumes:
-      # 挂载.env文件，方便配置API密钥 | Mount .env file for easy API key configuration
-      - ./owl/.env:/app/owl/.env
-      # 可选：挂载数据目录 | Optional: Mount data directory
-      - ./data:/app/data
-      # 挂载缓存目录，避免重复下载 | Mount cache directories to avoid repeated downloads
-      - playwright-cache:/root/.cache/ms-playwright
-      - pip-cache:/root/.pip/cache
+      # Mount .env file for easy API key configuration
+      - ../owl/.env:/app/owl/.env
+      # Mount examples folder to support running code examples inside the Docker container
+      - ../examples:/app/examples
+      # Mount data directory
+      - ./data:/app/owl/data
+      # Mount cache directories to avoid repeated downloads
+      - ~/.cache/pip:/root/.pip/cache
+      - ~/.cache/playwright:/root/.cache/ms-playwright
     environment:
-      # 可以在这里设置环境变量，覆盖.env文件中的设置 | Set environment variables here to override settings in .env file
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      # 添加显示相关的环境变量 | Add display-related environment variables
       - DISPLAY=:99
-      - PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
-      # 设置Python不生成.pyc文件，减少磁盘IO | Set Python to not generate .pyc files, reduce disk IO
       - PYTHONDONTWRITEBYTECODE=1
-      # 设置Python不缓冲输出，方便查看日志 | Set Python to not buffer output for easier log viewing
       - PYTHONUNBUFFERED=1
-      # 设置终端颜色 | Set terminal color
       - TERM=xterm-256color
-      # 启用pip缓存 | Enable pip cache
-      - PIP_CACHE_DIR=/root/.pip/cache
+      - GRADIO_SERVER_NAME=0.0.0.0
+      - GRADIO_SERVER_PORT=7860
+      - PYTHONPATH=.
     ports:
-      # 如果项目有Web界面，可以映射端口 | If the project has a web interface, map ports
-      - "8000:8000"
-    # 使用交互模式运行容器 | Run container in interactive mode
+      - "7860:7860"
     stdin_open: true
     tty: true
-    # 添加共享内存大小，提高浏览器性能 | Add shared memory size to improve browser performance
     shm_size: 2gb
-    # 设置资源限制 | Set resource limits
+    # Simplify resource limits
     deploy:
       resources:
         limits:
-          cpus: '2'
           memory: 4G
 
-# 定义持久化卷，用于缓存 | Define persistent volumes for caching
+# Define persistent volumes for caching
 volumes:
   playwright-cache:
   pip-cache:

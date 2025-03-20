@@ -36,13 +36,13 @@ else
 fi
 
 # 检查脚本是否存在 | Check if the script exists
-if [ ! -f "owl/$SCRIPT_NAME" ]; then
-    echo "错误 | Error: 脚本 | Script 'owl/$SCRIPT_NAME' 不存在 | does not exist"
+if [ ! -f "../owl/$SCRIPT_NAME" ]; then
+    echo "错误 | Error: 脚本 | Script '../owl/$SCRIPT_NAME' 不存在 | does not exist"
     echo "可用的脚本有 | Available scripts:"
     if [[ "$OS_TYPE" == MINGW* ]] || [[ "$OS_TYPE" == CYGWIN* ]] || [[ "$OS_TYPE" == MSYS* ]]; then
-        find owl -name "*.py" | grep -v "__" | sed 's/\\/\//g'
+        find ../owl -name "*.py" | grep -v "__" | sed 's/\\/\//g'
     else
-        ls -1 owl/*.py | grep -v "__"
+        ls -1 ../owl/*.py | grep -v "__"
     fi
     exit 1
 fi
@@ -51,8 +51,8 @@ echo "使用脚本 | Using script: $SCRIPT_NAME"
 echo "查询内容 | Query content: $QUERY"
 
 # 从docker-compose.yml获取服务名称（如果文件存在） | Get service name from docker-compose.yml (if file exists)
-if [ -f ".container/docker-compose.yml" ]; then
-    DETECTED_SERVICE=$(grep -E "^  [a-zA-Z0-9_-]*:" .container/docker-compose.yml | head -1 | sed 's/^  \(.*\):.*/\1/')
+if [ -f "docker-compose.yml" ]; then
+    DETECTED_SERVICE=$(grep -E "^  [a-zA-Z0-9_-]*:" docker-compose.yml | head -1 | sed 's/^  \(.*\):.*/\1/')
     if [ ! -z "$DETECTED_SERVICE" ]; then
         SERVICE_NAME="$DETECTED_SERVICE"
         echo "从docker-compose.yml检测到服务名称 | Detected service name from docker-compose.yml: $SERVICE_NAME"
@@ -119,11 +119,11 @@ echo "在Docker容器中使用 $PYTHON_CMD 运行脚本... | Running script in D
 # 根据操作系统类型执行不同的命令 | Execute different commands based on operating system type
 if [[ "$OS_TYPE" == MINGW* ]] || [[ "$OS_TYPE" == CYGWIN* ]] || [[ "$OS_TYPE" == MSYS* ]]; then
     # Windows可能需要特殊处理引号 | Windows may need special handling for quotes
-    winpty $COMPOSE_CMD exec -T $SERVICE_NAME $PYTHON_CMD $SCRIPT_NAME "$QUERY"
+    winpty $COMPOSE_CMD exec -T $SERVICE_NAME bash -c "cd .. && source .venv/bin/activate && cd owl && $PYTHON_CMD $SCRIPT_NAME \"$QUERY\""
     RESULT=$?
 else
     # macOS 或 Linux | macOS or Linux
-    $COMPOSE_CMD exec -T $SERVICE_NAME $PYTHON_CMD $SCRIPT_NAME "$QUERY"
+    $COMPOSE_CMD exec -T $SERVICE_NAME bash -c "cd .. && source .venv/bin/activate && cd owl && $PYTHON_CMD $SCRIPT_NAME \"$QUERY\""
     RESULT=$?
 fi
 

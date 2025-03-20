@@ -11,6 +11,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
+
+"""
+This module provides integration with the Groq API platform for the OWL system.
+
+It configures different agent roles with appropriate Groq models based on their requirements:
+- Tool-intensive roles (assistant, web, planning, video, image) use GROQ_LLAMA_3_3_70B
+- Document processing uses GROQ_MIXTRAL_8_7B
+- Simple roles (user) use GROQ_LLAMA_3_1_8B
+
+To use this module:
+1. Set GROQ_API_KEY in your .env file
+2. Set OPENAI_API_BASE_URL to "https://api.groq.com/openai/v1"
+3. Run with: python -m examples.run_groq
+"""
+
+import sys
 from dotenv import load_dotenv
 from camel.models import ModelFactory
 from camel.toolkits import (
@@ -20,12 +36,13 @@ from camel.toolkits import (
     ImageAnalysisToolkit,
     SearchToolkit,
     VideoAnalysisToolkit,
-    WebToolkit,
+    BrowserToolkit,
+    FileWriteToolkit,
 )
 from camel.types import ModelPlatformType, ModelType
 from camel.logger import set_log_level
 
-from utils import OwlRolePlaying, run_society, DocumentProcessingToolkit
+from owl.utils import OwlRolePlaying, run_society, DocumentProcessingToolkit
 
 load_dotenv()
 
@@ -45,47 +62,47 @@ def construct_society(question: str) -> OwlRolePlaying:
     # Create models for different components
     models = {
         "user": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GROQ,
+            model_type=ModelType.GROQ_LLAMA_3_1_8B,  # Simple role, can use 8B model
             model_config_dict={"temperature": 0},
         ),
         "assistant": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GROQ,
+            model_type=ModelType.GROQ_LLAMA_3_3_70B,  # Main assistant needs tool capability
             model_config_dict={"temperature": 0},
         ),
-        "web": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+        "browsing": ModelFactory.create(
+            model_platform=ModelPlatformType.GROQ,
+            model_type=ModelType.GROQ_LLAMA_3_3_70B,  # Web browsing requires tool usage
             model_config_dict={"temperature": 0},
         ),
         "planning": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GROQ,
+            model_type=ModelType.GROQ_LLAMA_3_3_70B,  # Planning requires complex reasoning
             model_config_dict={"temperature": 0},
         ),
         "video": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GROQ,
+            model_type=ModelType.GROQ_LLAMA_3_3_70B,  # Video analysis is multimodal
             model_config_dict={"temperature": 0},
         ),
         "image": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GROQ,
+            model_type=ModelType.GROQ_LLAMA_3_3_70B,  # Image analysis is multimodal
             model_config_dict={"temperature": 0},
         ),
         "document": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
+            model_platform=ModelPlatformType.GROQ,
+            model_type=ModelType.GROQ_MIXTRAL_8_7B,  # Document processing can use Mixtral
             model_config_dict={"temperature": 0},
         ),
     }
 
     # Configure toolkits
     tools = [
-        *WebToolkit(
+        *BrowserToolkit(
             headless=False,  # Set to True for headless mode (e.g., on remote servers)
-            web_agent_model=models["web"],
+            web_agent_model=models["browsing"],
             planning_agent_model=models["planning"],
         ).get_tools(),
         *VideoAnalysisToolkit(model=models["video"]).get_tools(),
@@ -97,6 +114,7 @@ def construct_society(question: str) -> OwlRolePlaying:
         SearchToolkit().search_wiki,
         *ExcelToolkit().get_tools(),
         *DocumentProcessingToolkit(model=models["document"]).get_tools(),
+        *FileWriteToolkit(output_dir="./").get_tools(),
     ]
 
     # Configure agent roles and parameters
@@ -124,10 +142,18 @@ def construct_society(question: str) -> OwlRolePlaying:
 def main():
     r"""Main function to run the OWL system with an example question."""
     # Example research question
-    question = "Give me analysis of the tesla stock. You should return answer under 3 mins. No need to verify your answer."
+    default_task = "Navigate to Amazon.com and identify one product that is attractive to coders. Please provide me with the product name and price. No need to verify your answer."
 
     # Construct and run the society
-    society = construct_society(question)
+    # Note: This configuration uses GROQ_LLAMA_3_3_70B for tool-intensive roles (assistant, web, planning, video, image)
+    # and GROQ_MIXTRAL_8_7B for document processing. GROQ_LLAMA_3_1_8B is used only for the user role
+    # which doesn't require tool usage capabilities.
+
+    # Override default task if command line argument is provided
+    task = sys.argv[1] if len(sys.argv) > 1 else default_task
+
+    # Construct and run the society
+    society = construct_society(task)
     answer, chat_history, token_count = run_society(society)
 
     # Output the result

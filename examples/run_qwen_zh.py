@@ -12,89 +12,107 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
+# To run this file, you need to configure the Qwen API key
+# You can obtain your API key from Bailian platform: bailian.console.aliyun.com
+# Set it as QWEN_API_KEY="your-api-key" in your .env file or add it to your environment variables
 
-# To run this file, you need to configure the DeepSeek API key
-# You can obtain your API key from DeepSeek platform: https://platform.deepseek.com/api_keys
-# Set it as DEEPSEEK_API_KEY="your-api-key" in your .env file or add it to your environment variables
-
-
+import sys
 from dotenv import load_dotenv
-
-
 from camel.models import ModelFactory
 from camel.toolkits import (
     CodeExecutionToolkit,
     ExcelToolkit,
+    ImageAnalysisToolkit,
     SearchToolkit,
+    VideoAnalysisToolkit,
+    BrowserToolkit,
+    FileWriteToolkit,
 )
 from camel.types import ModelPlatformType, ModelType
+from camel.societies import RolePlaying
 
-
-from utils import OwlRolePlaying, run_society, DocumentProcessingToolkit
+from owl.utils import run_society, DocumentProcessingToolkit
 
 from camel.logger import set_log_level
 
+
+import pathlib
+
+base_dir = pathlib.Path(__file__).parent.parent
+env_path = base_dir / "owl" / ".env"
+load_dotenv(dotenv_path=str(env_path))
+
 set_log_level(level="DEBUG")
 
-load_dotenv()
 
-
-def construct_society(question: str) -> OwlRolePlaying:
-    r"""Construct a society of agents based on the given question.
+def construct_society(question: str) -> RolePlaying:
+    """
+    Construct a society of agents based on the given question.
 
     Args:
         question (str): The task or question to be addressed by the society.
 
     Returns:
-        OwlRolePlaying: A configured society of agents ready to address the question.
+        RolePlaying: A configured society of agents ready to address the question.
     """
 
     # Create models for different components
     models = {
         "user": ModelFactory.create(
-            model_platform=ModelPlatformType.DEEPSEEK,
-            model_type=ModelType.DEEPSEEK_CHAT,
+            model_platform=ModelPlatformType.QWEN,
+            model_type=ModelType.QWEN_MAX,
             model_config_dict={"temperature": 0},
         ),
         "assistant": ModelFactory.create(
-            model_platform=ModelPlatformType.DEEPSEEK,
-            model_type=ModelType.DEEPSEEK_CHAT,
+            model_platform=ModelPlatformType.QWEN,
+            model_type=ModelType.QWEN_MAX,
             model_config_dict={"temperature": 0},
         ),
-        "web": ModelFactory.create(
-            model_platform=ModelPlatformType.DEEPSEEK,
-            model_type=ModelType.DEEPSEEK_CHAT,
+        "browsing": ModelFactory.create(
+            model_platform=ModelPlatformType.QWEN,
+            model_type=ModelType.QWEN_MAX,
             model_config_dict={"temperature": 0},
         ),
         "planning": ModelFactory.create(
-            model_platform=ModelPlatformType.DEEPSEEK,
-            model_type=ModelType.DEEPSEEK_CHAT,
+            model_platform=ModelPlatformType.QWEN,
+            model_type=ModelType.QWEN_MAX,
             model_config_dict={"temperature": 0},
         ),
         "video": ModelFactory.create(
-            model_platform=ModelPlatformType.DEEPSEEK,
-            model_type=ModelType.DEEPSEEK_CHAT,
+            model_platform=ModelPlatformType.QWEN,
+            model_type=ModelType.QWEN_MAX,
             model_config_dict={"temperature": 0},
         ),
         "image": ModelFactory.create(
-            model_platform=ModelPlatformType.DEEPSEEK,
-            model_type=ModelType.DEEPSEEK_CHAT,
+            model_platform=ModelPlatformType.QWEN,
+            model_type=ModelType.QWEN_MAX,
             model_config_dict={"temperature": 0},
         ),
         "document": ModelFactory.create(
-            model_platform=ModelPlatformType.DEEPSEEK,
-            model_type=ModelType.DEEPSEEK_CHAT,
+            model_platform=ModelPlatformType.QWEN,
+            model_type=ModelType.QWEN_MAX,
             model_config_dict={"temperature": 0},
         ),
     }
 
     # Configure toolkits
     tools = [
+        *BrowserToolkit(
+            headless=False,  # Set to True for headless mode (e.g., on remote servers)
+            web_agent_model=models["browsing"],
+            planning_agent_model=models["planning"],
+            output_language="English",
+        ).get_tools(),
+        *VideoAnalysisToolkit(model=models["video"]).get_tools(),
         *CodeExecutionToolkit(sandbox="subprocess", verbose=True).get_tools(),
+        *ImageAnalysisToolkit(model=models["image"]).get_tools(),
         SearchToolkit().search_duckduckgo,
+        SearchToolkit().search_google,  # Comment this out if you don't have google search
         SearchToolkit().search_wiki,
+        SearchToolkit().search_baidu,
         *ExcelToolkit().get_tools(),
         *DocumentProcessingToolkit(model=models["document"]).get_tools(),
+        *FileWriteToolkit(output_dir="./").get_tools(),
     ]
 
     # Configure agent roles and parameters
@@ -108,13 +126,13 @@ def construct_society(question: str) -> OwlRolePlaying:
     }
 
     # Create and return the society
-    society = OwlRolePlaying(
+    society = RolePlaying(
         **task_kwargs,
         user_role_name="user",
         user_agent_kwargs=user_agent_kwargs,
         assistant_role_name="assistant",
         assistant_agent_kwargs=assistant_agent_kwargs,
-        output_language="Chinese",
+        output_language="English",
     )
 
     return society
@@ -123,14 +141,17 @@ def construct_society(question: str) -> OwlRolePlaying:
 def main():
     r"""Main function to run the OWL system with an example question."""
     # Example research question
-    question = (
-        "请分析GitHub上CAMEL-AI项目的最新统计数据。找出该项目的星标数量、"
-        "贡献者数量和最近的活跃度。然后，创建一个简单的Excel表格来展示这些数据，"
-        "并生成一个柱状图来可视化这些指标。最后，总结CAMEL项目的受欢迎程度和发展趋势。"
-    )
+<<<<<<< HEAD:owl/run_qwen_zh.py
+    question = "What is the meaning of LLM?"
+=======
+    default_task = "浏览亚马逊并找出一款对程序员有吸引力的产品。请提供产品名称和价格"
+
+    # Override default task if command line argument is provided
+    task = sys.argv[1] if len(sys.argv) > 1 else default_task
+>>>>>>> 106a169ee93a97e54cee672d6ee4ade5df409cdf:examples/run_qwen_zh.py
 
     # Construct and run the society
-    society = construct_society(question)
+    society = construct_society(task)
     answer, chat_history, token_count = run_society(society)
 
     # Output the result

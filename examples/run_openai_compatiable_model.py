@@ -12,6 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
+import sys
 
 from dotenv import load_dotenv
 from camel.models import ModelFactory
@@ -20,27 +21,32 @@ from camel.toolkits import (
     ExcelToolkit,
     ImageAnalysisToolkit,
     SearchToolkit,
-    WebToolkit,
+    BrowserToolkit,
+    FileWriteToolkit,
 )
 from camel.types import ModelPlatformType
 
-from utils import OwlRolePlaying, run_society
-
+from owl.utils import run_society
+from camel.societies import RolePlaying
 from camel.logger import set_log_level
+
+import pathlib
+
+base_dir = pathlib.Path(__file__).parent.parent
+env_path = base_dir / "owl" / ".env"
+load_dotenv(dotenv_path=str(env_path))
 
 set_log_level(level="DEBUG")
 
-load_dotenv()
 
-
-def construct_society(question: str) -> OwlRolePlaying:
+def construct_society(question: str) -> RolePlaying:
     r"""Construct a society of agents based on the given question.
 
     Args:
         question (str): The task or question to be addressed by the society.
 
     Returns:
-        OwlRolePlaying: A configured society of agents ready to address the question.
+        RolePlaying: A configured society of agents ready to address the question.
     """
 
     # Create models for different components
@@ -50,43 +56,43 @@ def construct_society(question: str) -> OwlRolePlaying:
             model_type="qwen-max",
             api_key=os.getenv("QWEN_API_KEY"),
             url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-            model_config_dict={"temperature": 0.4, "max_tokens": 4096},
+            model_config_dict={"temperature": 0.4, "max_tokens": 128000},
         ),
         "assistant": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
             model_type="qwen-max",
             api_key=os.getenv("QWEN_API_KEY"),
             url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-            model_config_dict={"temperature": 0.4, "max_tokens": 4096},
+            model_config_dict={"temperature": 0.4, "max_tokens": 128000},
         ),
-        "web": ModelFactory.create(
+        "browsing": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
             model_type="qwen-vl-max",
             api_key=os.getenv("QWEN_API_KEY"),
             url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-            model_config_dict={"temperature": 0.4, "max_tokens": 4096},
+            model_config_dict={"temperature": 0.4, "max_tokens": 128000},
         ),
         "planning": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
             model_type="qwen-max",
             api_key=os.getenv("QWEN_API_KEY"),
             url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-            model_config_dict={"temperature": 0.4, "max_tokens": 4096},
+            model_config_dict={"temperature": 0.4, "max_tokens": 128000},
         ),
         "image": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
             model_type="qwen-vl-max",
             api_key=os.getenv("QWEN_API_KEY"),
             url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-            model_config_dict={"temperature": 0.4, "max_tokens": 4096},
+            model_config_dict={"temperature": 0.4, "max_tokens": 128000},
         ),
     }
 
     # Configure toolkits
     tools = [
-        *WebToolkit(
+        *BrowserToolkit(
             headless=False,  # Set to True for headless mode (e.g., on remote servers)
-            web_agent_model=models["web"],
+            web_agent_model=models["browsing"],
             planning_agent_model=models["planning"],
         ).get_tools(),
         *CodeExecutionToolkit(sandbox="subprocess", verbose=True).get_tools(),
@@ -95,6 +101,7 @@ def construct_society(question: str) -> OwlRolePlaying:
         SearchToolkit().search_google,  # Comment this out if you don't have google search
         SearchToolkit().search_wiki,
         *ExcelToolkit().get_tools(),
+        *FileWriteToolkit(output_dir="./").get_tools(),
     ]
 
     # Configure agent roles and parameters
@@ -108,7 +115,7 @@ def construct_society(question: str) -> OwlRolePlaying:
     }
 
     # Create and return the society
-    society = OwlRolePlaying(
+    society = RolePlaying(
         **task_kwargs,
         user_role_name="user",
         user_agent_kwargs=user_agent_kwargs,
@@ -122,10 +129,14 @@ def construct_society(question: str) -> OwlRolePlaying:
 def main():
     r"""Main function to run the OWL system with an example question."""
     # Example research question
-    question = "Navigate to Amazon.com and identify one product that is attractive to coders. Please provide me with the product name and price. No need to verify your answer."
+    default_task = "Navigate to Amazon.com and identify one product that is attractive to coders. Please provide me with the product name and price. No need to verify your answer."
+
+    # Override default task if command line argument is provided
+    task = sys.argv[1] if len(sys.argv) > 1 else default_task
 
     # Construct and run the society
-    society = construct_society(question)
+    society = construct_society(task)
+
     answer, chat_history, token_count = run_society(society)
 
     # Output the result

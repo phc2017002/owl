@@ -21,10 +21,12 @@ keywords = [
     "learning-systems"
 ]
 dependencies = [
-    "camel-ai[all]==0.2.23",
+    "camel-ai[all]==0.2.35",
     "chunkr-ai>=0.0.41",
     "docx2markdown>=0.1.1",
     "gradio>=3.50.2",
+    "mcp-simple-arxiv==0.2.2",
+    "mcp-server-fetch==2025.1.17",
 ]
 
 [project.urls]

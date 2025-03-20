@@ -26,17 +26,22 @@ from camel.toolkits import (
     ImageAnalysisToolkit,
     SearchToolkit,
     VideoAnalysisToolkit,
-    WebToolkit,
+    BrowserToolkit,
+    FileWriteToolkit,
 )
 from camel.types import ModelPlatformType, ModelType
 from camel.configs import ChatGPTConfig
 
-from utils import GAIABenchmark
+from owl.utils import GAIABenchmark
 from camel.logger import set_log_level
 
-set_log_level(level="DEBUG")
+import pathlib
 
-load_dotenv()
+base_dir = pathlib.Path(__file__).parent.parent
+env_path = base_dir / "owl" / ".env"
+load_dotenv(dotenv_path=str(env_path))
+
+set_log_level(level="DEBUG")
 
 logger = get_logger(__name__)
 
@@ -51,6 +56,8 @@ def main():
     # Create cache directory
     cache_dir = "tmp/"
     os.makedirs(cache_dir, exist_ok=True)
+    result_dir = "results/"
+    os.makedirs(result_dir, exist_ok=True)
 
     # Create models for different components
     models = {
@@ -64,7 +71,7 @@ def main():
             model_type=ModelType.GPT_4O,
             model_config_dict=ChatGPTConfig(temperature=0, top_p=1).as_dict(),
         ),
-        "web": ModelFactory.create(
+        "browsing": ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI,
             model_type=ModelType.GPT_4O,
             model_config_dict=ChatGPTConfig(temperature=0, top_p=1).as_dict(),
@@ -88,9 +95,9 @@ def main():
 
     # Configure toolkits
     tools = [
-        *WebToolkit(
+        *BrowserToolkit(
             headless=False,  # Set to True for headless mode (e.g., on remote servers)
-            web_agent_model=models["web"],
+            web_agent_model=models["browsing"],
             planning_agent_model=models["planning"],
         ).get_tools(),
         *VideoAnalysisToolkit(
@@ -101,6 +108,7 @@ def main():
         *ImageAnalysisToolkit(model=models["image"]).get_tools(),
         *SearchToolkit().get_tools(),
         *ExcelToolkit().get_tools(),
+        *FileWriteToolkit(output_dir="./").get_tools(),
     ]
 
     # Configure agent roles and parameters
@@ -127,8 +135,8 @@ def main():
     )
 
     # Output results
-    logger.success(f"Correct: {result['correct']}, Total: {result['total']}")
-    logger.success(f"Accuracy: {result['accuracy']}")
+    logger.info(f"Correct: {result['correct']}, Total: {result['total']}")
+    logger.info(f"Accuracy: {result['accuracy']}")
 
 
 if __name__ == "__main__":
