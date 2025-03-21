@@ -130,7 +130,7 @@ async def add_request_id(request: Request, call_next):
 class QueryRequest(BaseModel):
     question: str = Field(..., min_length=1, max_length=1000, description="The question to ask the agent society")
     cache_key: Optional[str] = None  # No need to use Field for Optional
-    model_config: Optional[Dict[str, Any]] = None  # No need to use Field for Optional
+    model_params: Optional[Dict[str, Any]] = None  # Renamed from model_config to avoid conflict
 
 class QueryResponse(BaseModel):
     request_id: str
