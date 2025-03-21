@@ -128,9 +128,9 @@ async def add_request_id(request: Request, call_next):
 
 # Define request models with validation
 class QueryRequest(BaseModel):
-    question: str = Field(..., min_length=1, max_length=1000, description="The question to ask the agent society")
-    cache_key: Optional[str] = Field(None, description="Optional custom cache key")
-    model_config: Optional[Dict[str, Any]] = Field(None, description="Optional model configuration")
+    question: str = Field(min_length=1, max_length=1000, description="The question to ask the agent society")
+    cache_key: Optional[str] = Field(default=None, description="Optional custom cache key")
+    model_config: Optional[Dict[str, Any]] = Field(default=None, description="Optional model configuration")
 
 class QueryResponse(BaseModel):
     request_id: str
