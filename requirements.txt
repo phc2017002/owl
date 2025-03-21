@@ -2,3 +2,32 @@ camel-ai[all]==0.2.35
 chunkr-ai>=0.0.41
 docx2markdown>=0.1.1
 gradio>=3.50.2
+
+# FastAPI and core dependencies
+fastapi>=0.103.0
+uvicorn>=0.23.2
+pydantic>=2.3.0
+python-dotenv>=1.0.0
+
+# Async and concurrency
+asyncio>=3.4.3
+
+# Caching and rate limiting
+fastapi-cache2>=0.2.1
+fastapi-limiter>=0.1.5
+redis>=4.6.0
+
+# Health checks
+fastapi-health>=0.4.0
+
+# CORS support
+starlord.py>=0.1.1
+
+# Logging
+python-json-logger>=2.0.7
+
+# UUID generation
+uuid>=1.30
+
+# Time handling
+python-dateutil>=2.8.2
