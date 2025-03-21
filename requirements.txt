@@ -20,9 +20,6 @@ redis>=4.6.0
 # Health checks
 fastapi-health>=0.4.0
 
-# CORS support
-starlord.py>=0.1.1
-
 # Logging
 python-json-logger>=2.0.7
 
